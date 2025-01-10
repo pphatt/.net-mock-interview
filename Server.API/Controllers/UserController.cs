@@ -7,6 +7,7 @@ using Server.Application.Features.UsersApp.Commands.UpdateUser;
 using Server.Application.Features.UsersApp.Queries.GetAllUser;
 using Server.Application.Features.UsersApp.Queries.GetAllUsers;
 using Server.Application.Features.UsersApp.Queries.GetUserById;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace Server.API.Controllers;
 
@@ -22,6 +23,10 @@ public class UserController : ControllerBase
     }
 
     [HttpGet]
+    [SwaggerOperation(Summary = "Get all the users", Description = "Get all the available users in the database.")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<List<UserDto>>> GetAll()
     {
         var users = await _mediator.Send(new GetAllUsersQuery());
@@ -36,6 +41,10 @@ public class UserController : ControllerBase
 
     [HttpGet]
     [Route("/users/{Id}")]
+    [SwaggerOperation(Summary = "Get the details of a specific user", Description = "Take a user id in order to retrieve.")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult<UserDto>> GetUserById([FromRoute] Guid Id)
     {
         var user = await _mediator.Send(new GetUserByIdQuery(Id));
@@ -50,6 +59,9 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("/user")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> CreateUser([FromForm] CreateUserCommand command)
     {
         await _mediator.Send(command);
@@ -59,6 +71,9 @@ public class UserController : ControllerBase
 
     [HttpDelete]
     [Route("/user/{Id}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> DeleteUser([FromRoute] DeleteUserCommand command)
     {
         await _mediator.Send(command);
@@ -68,6 +83,9 @@ public class UserController : ControllerBase
 
     [HttpPatch]
     [Route("/user")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> UpdateUser([FromForm] UpdateUserCommand command)
     {
         await _mediator.Send(command);
